@@ -3,8 +3,6 @@
  */
 
 import { create } from 'zustand';
-import { Video } from '../mocks/videos';
-import { Podcast } from '../mocks/podcasts';
 
 interface User {
   id: string;
