@@ -5,7 +5,7 @@
 import { useState } from 'react';
 import { Box, Typography, Paper, Button, Card, CardContent, Alert, Chip } from '@mui/material';
 import { Layout } from '../../components/Layout/Layout';
-import { gameNews, NewsCard } from '../../mocks/fakeNews';
+import { gameNews } from '../../mocks/fakeNews';
 import { getImmunityLevel } from '../../mocks/tests';
 import { useStore } from '../../store/useStore';
 

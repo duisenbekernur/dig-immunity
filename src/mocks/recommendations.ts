@@ -10,7 +10,7 @@ export interface Recommendation {
   reason: string;
 }
 
-export const getPersonalizedRecommendations = (userIQ: number, watchedVideos: string[]): Recommendation[] => {
+export const getPersonalizedRecommendations = (userIQ: number, _watchedVideos: string[]): Recommendation[] => {
   const recommendations: Recommendation[] = [];
 
   if (userIQ < 60) {

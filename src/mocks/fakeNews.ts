@@ -74,7 +74,7 @@ const tipsMap: Record<Verdict, string[]> = {
 /**
  * Симулирует проверку новости
  */
-export const checkNews = async (text: string): Promise<FactCheckResult> => {
+export const checkNews = async (_text: string): Promise<FactCheckResult> => {
   // Имитация задержки API
   await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -96,7 +96,7 @@ export const checkNews = async (text: string): Promise<FactCheckResult> => {
 /**
  * Получить рекомендуемый контент в зависимости от вердикта
  */
-const getRecommendedContent = (verdict: Verdict) => {
+const getRecommendedContent = (_verdict: Verdict) => {
   const allContent = [
     { id: "1", title: "Как распознать фейковые новости", type: "video" as const },
     { id: "2", title: "Медиаграмотность в цифровую эпоху", type: "video" as const },

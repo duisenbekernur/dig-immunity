@@ -2,7 +2,7 @@
  * Переиспользуемый компонент карточки
  */
 
-import { Card as MuiCard, CardContent, CardMedia, Typography, Box } from '@mui/material';
+import { Card as MuiCard, CardContent, CardMedia, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
 interface CardProps {
