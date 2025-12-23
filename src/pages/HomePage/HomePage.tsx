@@ -9,9 +9,12 @@ import { VideoCard } from '../../components/VideoCard/VideoCard';
 import { PodcastCard } from '../../components/PodcastCard/PodcastCard';
 import { getRecommendedVideos } from '../../mocks/videos';
 import { getRecommendedPodcasts } from '../../mocks/podcasts';
+import { useStore } from '../../store/useStore';
+import { t } from '../../utils/i18n';
 
 export const HomePage = () => {
   const navigate = useNavigate();
+  const { user, language } = useStore();
   const recommendedVideos = getRecommendedVideos();
   const recommendedPodcasts = getRecommendedPodcasts();
 
@@ -31,27 +34,41 @@ export const HomePage = () => {
           }}
         >
           <Typography variant="h2" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
-            🛡️ Digital Immunity
+            {t(language, 'appTitle')}
           </Typography>
           <Typography variant="h5" sx={{ mb: 4, opacity: 0.9 }}>
-            Защитите себя от дезинформации. Развивайте цифровую грамотность.
+            {language === 'kk'
+              ? 'Дезинформациядан қорғаныңыз. Цифрлық сауаттылығыңызды дамытыңыз.'
+              : 'Защитите себя от дезинформации. Развивайте цифровую грамотность.'}
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Button
               variant="contained"
               size="large"
-              onClick={() => navigate('/fact-checker')}
+              onClick={() => {
+                if (!user) {
+                  navigate('/profile');
+                } else {
+                  navigate('/fact-checker');
+                }
+              }}
               sx={{ bgcolor: 'white', color: 'primary.main', '&:hover': { bgcolor: 'grey.100' } }}
             >
-              Проверить новость
+              {language === 'kk' ? 'Жаңалықты тексеру' : 'Проверить новость'}
             </Button>
             <Button
               variant="outlined"
               size="large"
-              onClick={() => navigate('/game')}
+              onClick={() => {
+                if (!user) {
+                  navigate('/profile');
+                } else {
+                  navigate('/game');
+                }
+              }}
               sx={{ borderColor: 'white', color: 'white', '&:hover': { borderColor: 'white', bgcolor: 'rgba(255,255,255,0.1)' } }}
             >
-              Пройти игру
+              {language === 'kk' ? 'Ойынды бастау' : 'Пройти игру'}
             </Button>
           </Box>
         </Box>

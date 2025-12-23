@@ -11,6 +11,7 @@ import { videos } from '../../mocks/videos';
 import { podcasts } from '../../mocks/podcasts';
 import { digitalIQTest, calculateDigitalIQ, getImmunityLevel } from '../../mocks/tests';
 import { useStore } from '../../store/useStore';
+import { useNavigate } from 'react-router-dom';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -27,11 +28,12 @@ const TabPanel = ({ children, value, index }: TabPanelProps) => {
 };
 
 export const AcademyPage = () => {
+  const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
   const [testAnswers, setTestAnswers] = useState<Record<string, number>>({});
   const [testSubmitted, setTestSubmitted] = useState(false);
   const [testScore, setTestScore] = useState<number | null>(null);
-  const { updateUserIQ, addCompletedTest } = useStore();
+  const { updateUserIQ, addCompletedTest, user } = useStore();
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -42,6 +44,10 @@ export const AcademyPage = () => {
   };
 
   const handleSubmitTest = () => {
+    if (!user) {
+      navigate('/profile');
+      return;
+    }
     let correct = 0;
     digitalIQTest.questions.forEach((q) => {
       if (testAnswers[q.id] === q.correctAnswer) {
@@ -148,6 +154,19 @@ export const AcademyPage = () => {
 
         {/* Тесты */}
         <TabPanel value={tabValue} index={3}>
+          {!user ? (
+            <Paper sx={{ p: 4 }}>
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>
+                Доступ к тесту только для зарегистрированных пользователей
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 3, color: 'text.secondary' }}>
+                Войдите или зарегистрируйтесь, чтобы пройти тест и сохранить результат в вашем профиле.
+              </Typography>
+              <Button variant="contained" onClick={() => navigate('/profile')}>
+                Войти / зарегистрироваться
+              </Button>
+            </Paper>
+          ) : (
           <Paper sx={{ p: 4 }}>
             <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>
               {digitalIQTest.title}
@@ -231,6 +250,7 @@ export const AcademyPage = () => {
               </Box>
             )}
           </Paper>
+          )}
         </TabPanel>
       </Box>
     </Layout>

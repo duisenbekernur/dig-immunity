@@ -8,13 +8,16 @@ import { Layout } from '../../components/Layout/Layout';
 import { gameNews } from '../../mocks/fakeNews';
 import { getImmunityLevel } from '../../mocks/tests';
 import { useStore } from '../../store/useStore';
+import { useNavigate } from 'react-router-dom';
+import { t } from '../../utils/i18n';
 
 export const GamePage = () => {
+  const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, boolean>>({});
   const [showResult, setShowResult] = useState(false);
   const [gameFinished, setGameFinished] = useState(false);
-  const { updateGameScore } = useStore();
+  const { updateGameScore, user, language } = useStore();
 
   const currentNews = gameNews[currentIndex];
   const totalQuestions = gameNews.length;
@@ -43,6 +46,24 @@ export const GamePage = () => {
     setShowResult(false);
     setGameFinished(false);
   };
+
+  if (!user) {
+    return (
+      <Layout>
+        <Box sx={{ maxWidth: 600, mx: 'auto', textAlign: 'center' }}>
+          <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>
+            Доступ к игре только для зарегистрированных пользователей
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 3, color: 'text.secondary' }}>
+            Зарегистрируйтесь или войдите в аккаунт, чтобы проходить игру и сохранять результаты.
+          </Typography>
+          <Button variant="contained" size="large" onClick={() => navigate('/profile')}>
+            Войти / зарегистрироваться
+          </Button>
+        </Box>
+      </Layout>
+    );
+  }
 
   if (gameFinished) {
     const score = Object.values(answers).filter(Boolean).length;
@@ -82,10 +103,12 @@ export const GamePage = () => {
     <Layout>
       <Box sx={{ maxWidth: 900, mx: 'auto' }}>
         <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>
-          Game Zone
+          {t(language, 'gameTitle')}
         </Typography>
         <Typography variant="body1" sx={{ mb: 4, color: 'text.secondary' }}>
-          Определите, является ли новость фейком или правдой. Пройдите все {totalQuestions} карточек.
+            {language === 'kk'
+              ? `Жаңалықтың фейк не шын екенін анықтаңыз. Барлық ${totalQuestions} карточканы өтіңіз.`
+              : `Определите, является ли новость фейком или правдой. Пройдите все ${totalQuestions} карточек.`}
         </Typography>
 
         {/* Прогресс */}

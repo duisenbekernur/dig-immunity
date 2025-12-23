@@ -72,7 +72,7 @@ const tipsMap: Record<Verdict, string[]> = {
 };
 
 /**
- * Симулирует проверку новости
+ * Симулирует проверку новости по тексту
  */
 export const checkNews = async (_text: string): Promise<FactCheckResult> => {
   // Имитация задержки API
@@ -91,6 +91,15 @@ export const checkNews = async (_text: string): Promise<FactCheckResult> => {
     tips: tipsMap[verdict][tipsIndex],
     recommended: getRecommendedContent(verdict)
   };
+};
+
+/**
+ * Симулирует проверку новости по ссылке
+ * Логика такая же, как по тексту, но в реальном мире здесь бы учитывался домен и репутация источника.
+ */
+export const checkNewsByUrl = async (_url: string): Promise<FactCheckResult> => {
+  // Переиспользуем ту же заглушку
+  return checkNews(_url);
 };
 
 /**

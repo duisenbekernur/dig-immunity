@@ -2,7 +2,8 @@
  * Страница профиля пользователя
  */
 
-import { Box, Typography, Paper, Grid, LinearProgress, Chip, Card, CardContent } from '@mui/material';
+import { useState } from 'react';
+import { Box, Typography, Paper, Grid, LinearProgress, Chip, Card, CardContent, TextField, Button, Alert } from '@mui/material';
 import { Layout } from '../../components/Layout/Layout';
 import { useStore } from '../../store/useStore';
 import { getPersonalizedRecommendations } from '../../mocks/recommendations';
@@ -10,8 +11,108 @@ import { videos } from '../../mocks/videos';
 import { VideoCard } from '../../components/VideoCard/VideoCard';
 
 export const ProfilePage = () => {
-  const { user } = useStore();
-  
+  const { user, register, login, logout } = useStore();
+  const [isRegisterMode, setIsRegisterMode] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = () => {
+    setError(null);
+    if (!email.trim() || !password.trim() || (isRegisterMode && !name.trim())) {
+      setError('Заполните все поля');
+      return;
+    }
+
+    if (isRegisterMode) {
+      const res = register(name.trim(), email.trim(), password.trim());
+      if (!res.success) {
+        setError(res.error || 'Ошибка регистрации');
+      }
+    } else {
+      const res = login(email.trim(), password.trim());
+      if (!res.success) {
+        setError(res.error || 'Ошибка авторизации');
+      }
+    }
+  };
+
+  if (!user) {
+    return (
+      <Layout>
+        <Box sx={{ maxWidth: 480, mx: 'auto' }}>
+          <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>
+            {isRegisterMode ? 'Регистрация' : 'Вход'}
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 3, color: 'text.secondary' }}>
+            Для доступа к проверке новостей, игре и сохранению прогресса необходимо войти или зарегистрироваться.
+          </Typography>
+
+          <Paper sx={{ p: 3 }}>
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
+
+            {isRegisterMode && (
+              <TextField
+                label="Имя"
+                fullWidth
+                margin="normal"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            )}
+
+            <TextField
+              label="Email"
+              type="email"
+              fullWidth
+              margin="normal"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+
+            <TextField
+              label="Пароль"
+              type="password"
+              fullWidth
+              margin="normal"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <Button
+              variant="contained"
+              fullWidth
+              sx={{ mt: 2, mb: 1 }}
+              onClick={handleSubmit}
+            >
+              {isRegisterMode ? 'Зарегистрироваться' : 'Войти'}
+            </Button>
+
+            <Button
+              variant="text"
+              fullWidth
+              onClick={() => {
+                setIsRegisterMode((prev) => !prev);
+                setError(null);
+              }}
+            >
+              {isRegisterMode ? 'У меня уже есть аккаунт' : 'Создать новый аккаунт'}
+            </Button>
+
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+              Для входа как администратор используйте email <strong>admin@dig.kz</strong>.
+            </Typography>
+          </Paper>
+        </Box>
+      </Layout>
+    );
+  }
+
   if (!user) {
     return (
       <Layout>
@@ -31,6 +132,12 @@ export const ProfilePage = () => {
         <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 4 }}>
           Профиль
         </Typography>
+
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+          <Button variant="outlined" color="inherit" onClick={logout}>
+            Выйти
+          </Button>
+        </Box>
 
         <Grid container spacing={3}>
           {/* Основная информация */}

@@ -2,7 +2,7 @@
  * Страница админ-панели
  */
 
-import { Box, Typography, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip } from '@mui/material';
+import { Box, Typography, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, Button } from '@mui/material';
 import { Layout } from '../../components/Layout/Layout';
 import { getOverallStats, regions, fakeNewsTopics } from '../../mocks/map';
 import { mockUsers } from '../../mocks/users';
@@ -19,11 +19,33 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
+import { useStore } from '../../store/useStore';
+import { useNavigate } from 'react-router-dom';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
 export const AdminPage = () => {
+  const { user } = useStore();
+  const navigate = useNavigate();
   const stats = getOverallStats();
+
+  if (!user || user.role !== 'admin') {
+    return (
+      <Layout>
+        <Box sx={{ maxWidth: 600, mx: 'auto', textAlign: 'center' }}>
+          <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>
+            Доступ запрещен
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 3, color: 'text.secondary' }}>
+            Админ-панель доступна только администраторам. Войдите под админ-аккаунтом.
+          </Typography>
+          <Button variant="contained" onClick={() => navigate('/profile')}>
+            Перейти к входу
+          </Button>
+        </Box>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
